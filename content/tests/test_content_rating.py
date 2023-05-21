@@ -22,7 +22,7 @@ class RatingAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.post("/api/content/rate/", self.rating_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        rating = Rating.objects.get(id=self.content.id)
+        rating = Rating.objects.get(content_id=response.data["content"])
         self.assertEqual(rating.score, self.rating_data["score"])
 
     def test_update_rating(self):
@@ -33,7 +33,7 @@ class RatingAPITestCase(APITestCase):
         }
         response = self.client.post("/api/content/rate/", new_rating_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        rating = Rating.objects.get(id=self.content.id)
+        rating = Rating.objects.get(content_id=response.data["content"])
         self.assertEqual(new_rating_data["score"], rating.score)
 
     def test_out_of_range_create_rating(self):
